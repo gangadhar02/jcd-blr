@@ -25,6 +25,14 @@ const HeroImageSlideshow = () => {
     setCurrentImageIndex(index);
   };
 
+  const nextSlide = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
   return (
     <div className="relative w-full h-[350px] md:h-[450px] lg:h-[500px] bg-gray-200 rounded-lg overflow-hidden shadow-2xl">
       {/* Images */}
@@ -43,6 +51,27 @@ const HeroImageSlideshow = () => {
           />
         </div>
       ))}
+
+      {/* Navigation arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/80 hover:bg-white shadow-lg rounded-full flex items-center justify-center transition-all"
+        aria-label="Previous image"
+      >
+        <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button
+        onClick={nextSlide}
+        className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/80 hover:bg-white shadow-lg rounded-full flex items-center justify-center transition-all"
+        aria-label="Next image"
+      >
+        <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
 
       {/* Navigation dots */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">

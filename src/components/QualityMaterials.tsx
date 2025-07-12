@@ -55,12 +55,12 @@ const QualityMaterials = () => {
               {brandLogos.map((brand, index) => (
                 <div
                   key={`brand-${index}`}
-                  className="flex-shrink-0 mx-4 p-6 w-48 h-24 flex items-center justify-center hover:scale-105 transition-transform duration-300"
+                  className="flex-shrink-0 mx-2 md:mx-4 p-4 md:p-6 w-32 h-20 md:w-48 md:h-24 flex items-center justify-center hover:scale-105 transition-transform duration-300"
                 >
                   <img
                     src={brand.url}
                     alt={brand.alt}
-                    className="max-w-full max-h-full object-contain transition-all duration-300"
+                    className="max-w-full max-h-full object-contain transition-all duration-300 scale-125 md:scale-100"
                     loading="lazy"
                   />
                 </div>
@@ -71,12 +71,12 @@ const QualityMaterials = () => {
               {brandLogos.map((brand, index) => (
                 <div
                   key={`brand-duplicate-${index}`}
-                  className="flex-shrink-0 mx-4 p-6 w-48 h-24 flex items-center justify-center hover:scale-105 transition-transform duration-300"
+                  className="flex-shrink-0 mx-2 md:mx-4 p-4 md:p-6 w-32 h-20 md:w-48 md:h-24 flex items-center justify-center hover:scale-105 transition-transform duration-300"
                 >
                   <img
                     src={brand.url}
                     alt={brand.alt}
-                    className="max-w-full max-h-full object-contain transition-all duration-300"
+                    className="max-w-full max-h-full object-contain transition-all duration-300 scale-125 md:scale-100"
                     loading="lazy"
                   />
                 </div>

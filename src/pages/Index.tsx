@@ -9,6 +9,7 @@ import ProcessSection from '../components/ProcessSection';
 import GoogleReviews from '../components/GoogleReviews';
 import QualityMaterials from '../components/QualityMaterials';
 import CTASection from '../components/CTASection';
+import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
 import WhatsAppButton from '../components/WhatsAppButton';
 
@@ -24,6 +25,7 @@ const Index = () => {
       <GoogleReviews />
       <QualityMaterials />
       <CTASection />
+      <FAQ />
       <Footer />
       <WhatsAppButton />
     </div>

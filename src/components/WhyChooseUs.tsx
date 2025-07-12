@@ -1,6 +1,7 @@
 
 import React from 'react';
 import CTAButton from './CTAButton';
+import './styles/scrollbar-hide.css';
 
 const WhyChooseUs = () => {
   const features = [{
@@ -30,8 +31,25 @@ const WhyChooseUs = () => {
           Why Choose Us
         </h2>
         
-        <div className="relative">
-          <div className="flex animate-[marquee_5s_linear_infinite] md:animate-marquee whitespace-nowrap">
+        {/* Mobile: Auto-scrolling marquee */}
+        <div className="md:hidden overflow-hidden">
+          <div className="flex animate-marquee-mobile whitespace-nowrap">
+            {[...features, ...features].map((feature, index) => (
+              <div key={index} className="flex-none mx-4 text-center min-w-[140px]">
+                <div className="bg-gray-50 rounded-2xl p-4 hover:shadow-lg transition-shadow duration-300">
+                  <div className="text-3xl mb-3">{feature.icon}</div>
+                  <h3 className="font-semibold text-gray-900 text-xs leading-tight">
+                    {feature.title}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Desktop: Marquee animation */}
+        <div className="hidden md:block relative overflow-hidden">
+          <div className="flex animate-marquee whitespace-nowrap">
             {[...features, ...features].map((feature, index) => (
               <div key={index} className="flex-none mx-8 text-center min-w-[200px]">
                 <div className="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300">

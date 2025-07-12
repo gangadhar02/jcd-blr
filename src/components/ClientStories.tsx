@@ -145,15 +145,15 @@ const ClientStories = () => {
                               alt={`${story.name} testimonial`}
                               className="w-full aspect-square object-cover"
                             />
-                            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
-                              <div className="text-white p-6 w-full">
-                                <h3 className="text-xl font-semibold mb-1">
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent flex items-end">
+                              <div className="text-white p-4 md:p-6 w-full">
+                                <h3 className="text-lg md:text-xl font-semibold mb-1">
                                   {story.name}
                                 </h3>
-                                <p className="text-sm text-gray-200 mb-3">
+                                <p className="text-xs md:text-sm text-gray-300 mb-2 md:mb-3">
                                   {story.location}
                                 </p>
-                                <p className="text-white italic text-sm">
+                                <p className="text-white italic text-xs md:text-sm leading-relaxed">
                                   "{story.testimonial}"
                                 </p>
                               </div>
