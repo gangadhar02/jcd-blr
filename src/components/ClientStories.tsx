@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useState, useEffect, useRef } from 'react';
 import { LazyImage } from './LazyImage';
 import CTAButton from './CTAButton';
 
 const ClientStories = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [slidesPerView, setSlidesPerView] = useState(3);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const stories = [
     {
@@ -52,37 +52,34 @@ const ClientStories = () => {
     }
   ];
 
-  // Responsive slides per view
+  // Auto-scroll functionality
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width >= 1024) {
-        setSlidesPerView(3);
-      } else if (width >= 640) {
-        setSlidesPerView(2);
-      } else {
-        setSlidesPerView(1);
+    if (!isPaused) {
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % stories.length);
+      }, 3000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
+  }, [isPaused, stories.length]);
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const totalSlides = Math.ceil(stories.length / slidesPerView);
-
-  const goToSlide = (slideIndex: number) => {
-    setCurrentSlide(Math.max(0, Math.min(slideIndex, totalSlides - 1)));
+  const handleNextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % stories.length);
+    setIsPaused(true);
+    setTimeout(() => setIsPaused(false), 5000); // Resume auto-scroll after 5 seconds
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    setIsPaused(true);
+    setTimeout(() => setIsPaused(false), 5000); // Resume auto-scroll after 5 seconds
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
+  const currentStory = stories[currentIndex];
 
   return (
     <section className="py-16 px-6 bg-gray-50">
@@ -96,90 +93,63 @@ const ClientStories = () => {
           </p>
         </div>
         
-        <div className="relative">
-          {/* Navigation arrows */}
-          <button
-            onClick={prevSlide}
-            disabled={currentSlide === 0}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          
-          <button
-            onClick={nextSlide}
-            disabled={currentSlide === totalSlides - 1}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          {/* Testimonials container */}
-          <div className="overflow-hidden">
-            <div 
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{
-                transform: `translateX(-${currentSlide * 100}%)`,
-              }}
-            >
-              {Array.from({ length: totalSlides }).map((_, slideIndex) => (
-                <div
-                  key={slideIndex}
-                  className="w-full flex-shrink-0 grid gap-6"
-                  style={{
-                    gridTemplateColumns: `repeat(${slidesPerView}, 1fr)`,
-                  }}
-                >
-                  {stories
-                    .slice(slideIndex * slidesPerView, (slideIndex + 1) * slidesPerView)
-                    .map((story) => (
-                      <Card key={story.id} className="overflow-hidden shadow-xl border-0 h-full">
-                        <CardContent className="p-0 h-full">
-                          <div className="relative h-full">
-                            <LazyImage
-                              src={story.image}
-                              alt={`${story.name} testimonial`}
-                              className="w-full aspect-square object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent flex items-end">
-                              <div className="text-white p-4 md:p-6 w-full">
-                                <h3 className="text-lg md:text-xl font-semibold mb-1">
-                                  {story.name}
-                                </h3>
-                                <p className="text-xs md:text-sm text-gray-300 mb-2 md:mb-3">
-                                  {story.location}
-                                </p>
-                                <p className="text-white italic text-xs md:text-sm leading-relaxed">
-                                  "{story.testimonial}"
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Slide indicators */}
-          <div className="flex justify-center mt-8 gap-2">
-            {Array.from({ length: totalSlides }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  index === currentSlide 
-                    ? 'bg-red-600' 
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
+        <div 
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Left side - Image */}
+            <div className="relative h-[400px] lg:h-[500px]">
+              <LazyImage
+                src={currentStory.image}
+                alt={`${currentStory.name} testimonial`}
+                className="w-full h-full object-cover"
               />
-            ))}
+            </div>
+
+            {/* Right side - Content */}
+            <div className="p-8 lg:p-12 flex flex-col justify-between">
+              <div>
+                <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                  {currentStory.name}
+                </h3>
+                <p className="text-gray-600 mb-6">{currentStory.location}</p>
+                <p className="text-gray-700 text-lg leading-relaxed italic">
+                  "{currentStory.testimonial}"
+                </p>
+              </div>
+
+              {/* Navigation controls */}
+              <div className="mt-8 flex items-center justify-between">
+                {/* Dot indicators */}
+                <div className="flex gap-2">
+                  {stories.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToSlide(index)}
+                      className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                        index === currentIndex 
+                          ? 'bg-red-600 w-8' 
+                          : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
+                      aria-label={`Go to testimonial ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Arrow navigation */}
+                <button
+                  onClick={handleNextSlide}
+                  className="w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl"
+                  aria-label="Next testimonial"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         
